@@ -3,7 +3,6 @@ package org.kill.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
 
 import org.kill.dao.SecSuccessKill;
 import org.kill.dao.SeckillDao;
@@ -14,17 +13,21 @@ import org.kill.entity.Successkill;
 import org.kill.exception.RepeatException;
 import org.kill.exception.SecKillException;
 import org.kill.exception.SeckillCloseException;
+import org.kill.seckillenum.SeckillStateEnum;
 import org.kill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
-
+@Service
 public class SeckillServiceImpl implements SeckillService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Resource
+    @Autowired
     private SeckillDao SeckillDao;
-    @Resource
+    @Autowired
     private SecSuccessKill SecSuccessKill;
     
     private final String slat = "bdsuai41d123nbwuidbsdsaewertg";
@@ -39,6 +42,9 @@ public class SeckillServiceImpl implements SeckillService{
         return SeckillDao.queryAll(0, 4);
     }
 
+    /**
+     * 开启秒杀接口
+     */
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
         Seckill seckill = SeckillDao.queryById(seckillId);
@@ -65,14 +71,16 @@ public class SeckillServiceImpl implements SeckillService{
         return md5;
     }
 
+    /**
+     * 执行秒杀事务
+     */
     @Override
+    @Transactional
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) {
-        if (md5 == null || md5.equals(getMd5(seckillId))) {
+        if (md5 == null || !md5.equals(getMd5(seckillId))) {
             throw new SecKillException("seckill data rewrite");
         }
-        
         Date now = new Date();
-        
         
         try {
             int updatecount = SeckillDao.reduceNumber(seckillId, now);
@@ -86,9 +94,8 @@ public class SeckillServiceImpl implements SeckillService{
                     throw new RepeatException("seckill repeated");
                 }else {
                     Successkill successkill = SecSuccessKill.queryByIdWithSeckill(seckillId, userPhone);
-                    return new SeckillExecution(seckillId, 1, "秒杀成功",successkill);
+                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,successkill);
                 }
-                
             }
         }catch (SeckillCloseException el) {
             throw el;

@@ -1,7 +1,7 @@
 package org.kill.dto;
 
-import org.kill.dao.SecSuccessKill;
 import org.kill.entity.Successkill;
+import org.kill.seckillenum.SeckillStateEnum;
 
 public class SeckillExecution {
     private long seckillId;
@@ -24,11 +24,11 @@ public class SeckillExecution {
         this.stateInfo = stateInfo;
     }
 
-    public SeckillExecution(long seckillId, int state, String stateInfo, Successkill successkill) {
+    public SeckillExecution(long seckillId, SeckillStateEnum stateEnum, Successkill successkill) {
         super();
         this.seckillId = seckillId;
-        this.state = state;
-        this.stateInfo = stateInfo;
+        this.state = stateEnum.getState();
+        this.stateInfo = stateEnum.getStateInfo();
         this.successkill = successkill;
     }
 
@@ -58,14 +58,6 @@ public class SeckillExecution {
 
     public void setStateInfo(String stateInfo) {
         this.stateInfo = stateInfo;
-    }
-
-    public Successkill getSuccesskill() {
-        return successkill;
-    }
-
-    public void setSuccesskill(Successkill successkill) {
-        this.successkill = successkill;
     }
 
    
