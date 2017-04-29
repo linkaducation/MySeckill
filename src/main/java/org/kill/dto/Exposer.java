@@ -14,10 +14,9 @@ public class Exposer {
     //结束
     private  long end;
     
-    public Exposer(Boolean exposed, String md5, long seckillId, long start, long now, long end) {
+    public Exposer(Boolean exposed,long seckillId, long start, long now, long end) {
         super();
         this.exposed = exposed;
-        this.md5 = md5;
         this.seckillId = seckillId;
         this.start = start;
         this.now = now;

@@ -1,6 +1,7 @@
 package org.kill.dto;
 
 import org.kill.dao.SecSuccessKill;
+import org.kill.entity.Successkill;
 
 public class SeckillExecution {
     private long seckillId;
@@ -12,7 +13,7 @@ public class SeckillExecution {
     private String stateInfo;
 
     //当秒杀成功时，需要传递秒杀成功的对象回去
-    private SecSuccessKill secSuccessKill;
+    private Successkill successkill;
     
     
 
@@ -23,12 +24,12 @@ public class SeckillExecution {
         this.stateInfo = stateInfo;
     }
 
-    public SeckillExecution(long seckillId, int state, String stateInfo, SecSuccessKill secSuccessKill) {
+    public SeckillExecution(long seckillId, int state, String stateInfo, Successkill successkill) {
         super();
         this.seckillId = seckillId;
         this.state = state;
         this.stateInfo = stateInfo;
-        this.secSuccessKill = secSuccessKill;
+        this.successkill = successkill;
     }
 
     public SeckillExecution() {
@@ -59,13 +60,15 @@ public class SeckillExecution {
         this.stateInfo = stateInfo;
     }
 
-    public SecSuccessKill getSecSuccessKill() {
-        return secSuccessKill;
+    public Successkill getSuccesskill() {
+        return successkill;
     }
 
-    public void setSecSuccessKill(SecSuccessKill secSuccessKill) {
-        this.secSuccessKill = secSuccessKill;
+    public void setSuccesskill(Successkill successkill) {
+        this.successkill = successkill;
     }
+
+   
 
    
 }
