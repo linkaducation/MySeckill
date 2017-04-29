@@ -7,8 +7,11 @@ import org.junit.runner.RunWith;
 import org.kill.dto.Exposer;
 import org.kill.dto.SeckillExecution;
 import org.kill.entity.Seckill;
+import org.kill.exception.RepeatException;
 import org.kill.exception.SecKillException;
 import org.kill.service.SeckillService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,42 +19,37 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:spring/spring-dao.xml","classpath:spring/spring-service.xml"})
 public class SeckillServiceImplTest {
-
+    private Logger loger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private SeckillService SeckillService;
     @Test
     public void testGetSeckillById() {
         Seckill result = SeckillService.getSeckillById(1000);
-        System.out.println(result.getName());
+        loger.info("result={}",result);
     }
 
     @Test
     public void testGetSeckillList() {
         List<Seckill> list = SeckillService.getSeckillList();
-        for (Seckill seckill : list) {
-            System.out.println(seckill.getName()+"\t"+seckill.getNumber());
-        }
+        loger.info("list={}",list);
     }
 
     @Test
-    public void testExportSeckillUrl() {
+    public void testeckill() {
         Exposer exposer = SeckillService.exportSeckillUrl(1001);
+        loger.info("exposer={}",exposer);
         if (exposer.getExposed()) {
             try {
                 SeckillExecution executeSeckill = SeckillService.executeSeckill(1001, 15521158749L, exposer.getMd5());
-                System.out.println(executeSeckill.getSeckillId() + "\t" +executeSeckill.getState() + 
-                        "\t" +executeSeckill.getStateInfo());
+                loger.info("executeSeckill={}",executeSeckill);
+            } catch (RepeatException e) {
+                loger.error(e.getMessage());
             } catch (SecKillException e) {
-                e.printStackTrace();
+                loger.error(e.getMessage());
             }
         }else {
-            System.out.println("秒杀未开启");
+            loger.warn("exposer={}",exposer);
         }
-    }
-
-    @Test
-    public void testExecuteSeckill() {
-       
     }
 
 }

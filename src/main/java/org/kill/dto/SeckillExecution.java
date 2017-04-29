@@ -60,6 +60,12 @@ public class SeckillExecution {
         this.stateInfo = stateInfo;
     }
 
+    @Override
+    public String toString() {
+        return "SeckillExecution [seckillId=" + seckillId + ", state=" + state + ", stateInfo=" + stateInfo
+                + ", successkill=" + successkill + "]";
+    }
+
    
 
    
