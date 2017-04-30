@@ -22,13 +22,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
+
 @Controller
-@RequestMapping("/seckill")
+@RequestMapping("")
 public class SeckillController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private SeckillService seckillService;
-    
+
     @RequestMapping(value="/list",method = RequestMethod.GET)
     public String list(Model model){
         List<Seckill> list = seckillService.getSeckillList();
@@ -42,7 +44,7 @@ public class SeckillController {
             return "redirect:/seckill_id/list";
         }
         Seckill seckill = seckillService.getSeckillById(seckill_id);
-        if (seckill == null) {
+        if (seckill == null ) {
             return "forword:/seckill/list";
         }
         model.addAttribute("seckill", seckill);

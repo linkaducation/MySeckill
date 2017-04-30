@@ -1,22 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.seckill</groupId>
+  <groupId>cn.codingxiaxw.seckill</groupId>
   <artifactId>seckill</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>seckill Maveb Webapp</name>
-  <url>http://maven.apache.srg</url>
   <packaging>war</packaging>
- 
-  <build>
-    <finalName>seckill</finalName>
-  </build>
+  <version>1.0-SNAPSHOT</version>
+  <name>seckill Maven Webapp</name>
+  <url>http://maven.apache.org</url>
   <dependencies>
   
     <dependency>
       <groupId>junit</groupId>
-	  <artifactId>junit</artifactId>
-	  <version>4.11</version>
-	  <scope>test</scope>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
     </dependency>
     
     <!-- 日志  slf4j：规范，接口   logback：实现 -->
@@ -132,5 +129,9 @@
       <artifactId>spring-test</artifactId>
       <version>4.1.7.RELEASE</version>
     </dependency>
-  </dependencies>
+    </dependencies>
+
+  <build>
+    <finalName>seckill</finalName>
+  </build>
 </project>
