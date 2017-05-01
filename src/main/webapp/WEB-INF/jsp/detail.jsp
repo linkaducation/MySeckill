@@ -26,20 +26,17 @@
    </div>
    <%--登录弹出层 输入电话--%>
    <div id="killPhoneModal" class="modal fade">
-
        <div class="modal-dialog">
-
            <div class="modal-content">
                <div class="modal-header">
                    <h3 class="modal-title text-center">
                        <span class="glyphicon glyphicon-phone"> </span>秒杀电话:
                    </h3>
                </div>
-
                <div class="modal-body">
                    <div class="row">
                        <div class="col-xs-8 col-xs-offset-2">
-                           <input type="text" name="killPhone" id="killPhoneKey"
+                           <input type="text" name="kill_phone" id="killPhoneKey"
                                   placeholder="填写手机号^o^" class="form-control">
                        </div>
                    </div>
@@ -58,6 +55,7 @@
        </div>
 
    </div>
+
    </body>
 
    <%--jQery文件,务必在bootstrap.min.js之前引入--%>
@@ -74,9 +72,9 @@
         $(function () {
             //使用EL表达式传入参数
             seckill.detail.init({
-                seckill_id:${seckill.seckill_id},
-                start_time:${seckill.start_time.time},//毫秒
-                end_time:${seckill.end_time.time}
+                seckill_id : ${seckill.seckill_id},
+                start_time : ${seckill.start_time.time},//毫秒
+                end_time : ${seckill.end_time.time}
             });
         })
     </script>
