@@ -3,6 +3,7 @@ package org.kill.web;
 import java.util.Date;
 import java.util.List;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.kill.dto.Exposer;
 import org.kill.dto.SeckillExecution;
 import org.kill.dto.SeckillResult;
@@ -96,6 +97,7 @@ public class SeckillController {
     }
     
     @RequestMapping(value = "/time/now",method = RequestMethod.GET)
+    @ResponseBody
     public SeckillResult<Long> time(){
         Date now = new Date();
         return new SeckillResult<Long>(true, now.getTime());
