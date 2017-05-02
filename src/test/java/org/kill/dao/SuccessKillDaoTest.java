@@ -23,7 +23,7 @@ public class SuccessKillDaoTest {
     
     @Test
     public void testSuccessKill(){
-        int result = secSuccessKill.insertSuccessKill(1000, 58749);
+        int result = secSuccessKill.insertSuccessKill(1001, 57749);
         System.out.println(result);
     }
     

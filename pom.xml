@@ -8,7 +8,6 @@
   <name>seckill Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-  
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -129,7 +128,7 @@
       <artifactId>spring-test</artifactId>
       <version>4.1.7.RELEASE</version>
     </dependency>
-    </dependencies>
+  </dependencies>
 
   <build>
     <finalName>seckill</finalName>

@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={"classpath:spring/spring-dao.xml"})
 public class SecKillDaoTest {
     @Resource
-    private SeckillDao seckilldao;
+    private SeckillDao seckilldao ;
     
     @Test
     public void testqueryById(){
@@ -40,7 +40,7 @@ public class SecKillDaoTest {
     
     @Test
     public void testReduceNumber(){
-        int i = seckilldao.reduceNumber(1000L, new Date());
+        int i = seckilldao.reduceNumber(1001L, new Date());
         System.out.println(i);
     }
     

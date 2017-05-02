@@ -22,12 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import javax.annotation.Resource;
+
 @Service
 public class SeckillServiceImpl implements SeckillService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
+    @Resource
     private SeckillDao SeckillDao;
-    @Autowired
+    @Resource
     private SecSuccessKill SecSuccessKill;
     
     private final String slat = "bdsuai41d123nbwuidbsdsaewertg";
@@ -93,7 +95,9 @@ public class SeckillServiceImpl implements SeckillService{
                 if (insertCount <= 0) {
                     throw new RepeatException("seckill repeated");
                 }else {
+
                     Successkill successkill = SecSuccessKill.queryByIdWithSeckill(seckillId, userPhone);
+                    System.out.println("购买成功" + successkill);
                     return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,successkill);
                 }
             }
