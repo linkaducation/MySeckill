@@ -1,11 +1,9 @@
 package org.kill.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-
 import org.kill.dao.SecSuccessKill;
 import org.kill.dao.SeckillDao;
+import org.kill.dao.betterRedis;
+import org.kill.dao.redisForSeckill;
 import org.kill.dto.Exposer;
 import org.kill.dto.SeckillExecution;
 import org.kill.entity.Seckill;
@@ -23,17 +21,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 @Service
-public class SeckillServiceImpl implements SeckillService{
+public class SeckillServiceImpl implements SeckillService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Resource
     private SeckillDao SeckillDao;
     @Resource
     private SecSuccessKill SecSuccessKill;
-    
+
     private final String slat = "bdsuai41d123nbwuidbsdsaewertg";
-    
+    @Autowired
+    private redisForSeckill redisDao;
+    @Autowired
+    private betterRedis betterRedis;
+
     @Override
     public Seckill getSeckillById(long id) {
         return SeckillDao.queryById(id);
@@ -49,26 +53,34 @@ public class SeckillServiceImpl implements SeckillService{
      */
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
-        Seckill seckill = SeckillDao.queryById(seckillId);
-        
+        Seckill seckill = betterRedis.getValue(seckillId);
         if (seckill == null) {
-            return new Exposer(false, seckillId);
+            seckill = SeckillDao.queryById(seckillId);
+            if (seckill == null) {
+                return new Exposer(false, seckillId);
+            }
+            String result = betterRedis.setValue(seckillId, seckill);
+            logger.info("信息加入redis");
+            if (!"OK".equalsIgnoreCase(result)) {
+                logger.info("不能加入redis{}", result);
+            }
         }
-        
+        logger.info("从redis取出信息");
+
         Date startTime = seckill.getStart_time();
         Date endTime = seckill.getEnd_time();
         Date now = new Date();
-        
-        if (now.getTime() < startTime.getTime() ||now.getTime() > endTime.getTime()) {
-            return new Exposer(false, seckillId,startTime.getTime(),now.getTime(),endTime.getTime());
+
+        if (now.getTime() < startTime.getTime() || now.getTime() > endTime.getTime()) {
+            return new Exposer(false, seckillId, startTime.getTime(), now.getTime(), endTime.getTime());
         }
-        
+
         String md5 = getMd5(seckillId);
-        return new Exposer(true,md5,seckillId);
+        return new Exposer(true, md5, seckillId);
     }
-    
-    private String getMd5(long seckillid){
-        String base = seckillid+"/" +slat;
+
+    private String getMd5(long seckillid) {
+        String base = seckillid + "/" + slat;
         String md5 = DigestUtils.md5DigestAsHex(base.getBytes());
         return md5;
     }
@@ -83,33 +95,40 @@ public class SeckillServiceImpl implements SeckillService{
             throw new SecKillException("seckill data rewrite");
         }
         Date now = new Date();
-        
+
         try {
             int updatecount = SeckillDao.reduceNumber(seckillId, now);
-            
+
             if (updatecount <= 0) {
                 throw new SeckillCloseException("seckill is close");
-            }else {
+            } else {
                 //记录购买行为
                 int insertCount = SecSuccessKill.insertSuccessKill(seckillId, userPhone);
                 if (insertCount <= 0) {
                     throw new RepeatException("seckill repeated");
-                }else {
+                } else {
 
                     Successkill successkill = SecSuccessKill.queryByIdWithSeckill(seckillId, userPhone);
                     System.out.println("购买成功" + successkill);
-                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,successkill);
+                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successkill);
                 }
             }
-        }catch (SeckillCloseException el) {
+        } catch (SeckillCloseException el) {
             throw el;
-        }catch (RepeatException e2) {
+        } catch (RepeatException e2) {
             throw e2;
-        }catch (Exception e) {
-            logger.error(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw new SecKillException("seckill inner error" + e.getMessage());
         }
-        
+
     }
 
+    public void setRedisDao(redisForSeckill redisDao) {
+        this.redisDao = redisDao;
+    }
+
+    public redisForSeckill getRedisDao() {
+        return redisDao;
+    }
 }
