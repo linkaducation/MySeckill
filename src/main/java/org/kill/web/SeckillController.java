@@ -1,9 +1,5 @@
 package org.kill.web;
 
-import java.util.Date;
-import java.util.List;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 import org.kill.dto.Exposer;
 import org.kill.dto.SeckillExecution;
 import org.kill.dto.SeckillResult;
@@ -17,13 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("")
@@ -33,7 +28,12 @@ public class SeckillController {
     private SeckillService seckillService;
 
     @RequestMapping(value="/list",method = RequestMethod.GET)
-    public String list(Model model){
+    public String list(Model model,HttpServletRequest request,@CookieValue(value = "killPhone",required = false) String cookie){
+//        HttpServletRequest request1 = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        System.out.println("=================agent==" + request.getHeader("User-Agent"));
+        System.out.println("=================uri==" + request.getRequestURI());
+        System.out.println("=================url==" + request.getRequestURL());
+        System.out.println("=================cookie==" + cookie);
         List<Seckill> list = seckillService.getSeckillList();
         model.addAttribute("list", list);
         return "list";
@@ -105,5 +105,13 @@ public class SeckillController {
     public SeckillResult<Long> time(){
         Date now = new Date();
         return new SeckillResult<Long>(true, now.getTime());
+    }
+
+    @RequestMapping(value = "/url",method = RequestMethod.GET)
+    public void SeckillUrl(HttpServletRequest request, HttpServletResponse response){
+        String uri = request.getRequestURI();
+        String agent = request.getHeader("User-Agent");
+        System.out.println("===========" + uri);
+        System.out.println("===========" + agent);
     }
 }
